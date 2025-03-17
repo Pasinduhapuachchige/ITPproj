@@ -7,6 +7,7 @@ import AdminDashboard from './components/dashboards/AdminDashboard';
 import AddEmployee from './components/AddEmployee';
 import RegisteredEmployees from './components/dashboards/RegisteredEmployees';
 import UpdateEmployee from './components/UpdateEmployee';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
