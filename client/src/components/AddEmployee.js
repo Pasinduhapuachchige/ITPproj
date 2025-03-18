@@ -1,3 +1,4 @@
+// AddEmployee.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -41,7 +42,11 @@ const AddEmployee = ({ onEmployeeAdded }) => {
         onEmployeeAdded();
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to add employee');
+      if (err.response && err.response.status === 400) {
+        setError('Employee number already exists');
+      } else {
+        setError(err.response?.data?.error || 'Failed to add employee');
+      }
     }
   };
 

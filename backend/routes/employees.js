@@ -1,3 +1,4 @@
+// routes/employees.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -14,7 +15,6 @@ router.get('/', auth(['hr_manager', 'system_admin']), async (req, res) => {
 });
 
 // Fetch a Single Employee by ID (Only HR Manager and System Admin can fetch employees)
-// Fetch a single employee by ID
 router.get('/:id', auth(['hr_manager', 'system_admin']), async (req, res) => {
   const { id } = req.params;
 
@@ -34,12 +34,22 @@ router.post('/', auth(['system_admin', 'hr_manager']), async (req, res) => {
   const { employeeNumber, name, email, phoneNumber, password, role } = req.body;
 
   try {
+    // Check if the employeeNumber already exists
+    const existingEmployee = await User.findOne({ employeeNumber });
+    if (existingEmployee) {
+      return res.status(400).json({ message: 'Employee number already exists' });
+    }
+
     // Create a new user (employee)
     const user = new User({ employeeNumber, name, email, phoneNumber, password, role });
     await user.save();
     res.status(201).json({ message: 'Employee added successfully' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    if (err.code === 11000) {
+      res.status(400).json({ message: 'Employee number or email already exists' });
+    } else {
+      res.status(500).json({ error: err.message });
+    }
   }
 });
 
@@ -49,6 +59,14 @@ router.put('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => {
   const { employeeNumber, name, email, phoneNumber, role } = req.body;
 
   try {
+    // Check if the new employeeNumber already exists for another employee
+    if (employeeNumber) {
+      const existingEmployee = await User.findOne({ employeeNumber, _id: { $ne: id } });
+      if (existingEmployee) {
+        return res.status(400).json({ message: 'Employee number already exists' });
+      }
+    }
+
     const updatedEmployee = await User.findByIdAndUpdate(
       id,
       { employeeNumber, name, email, phoneNumber, role },

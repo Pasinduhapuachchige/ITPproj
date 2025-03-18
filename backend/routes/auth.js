@@ -1,5 +1,6 @@
+// routes/auth.js
 const express = require('express');
-const router = express.Router(); // Initialize the router
+const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -35,4 +36,4 @@ router.post('/login', async (req, res) => {
   }
 });
 
-module.exports = router; // Export the router
+module.exports = router;

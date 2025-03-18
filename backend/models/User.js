@@ -1,11 +1,12 @@
+// models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
-  employeeNumber: { type: String, required: true, unique: true }, // Employee number (primary key)
+  employeeNumber: { type: String, required: true, unique: true }, // Primary key (unique)
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  phoneNumber: { type: String, required: true }, // Phone number
+  phoneNumber: { type: String, required: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['employee', 'hr_manager', 'system_admin'], default: 'employee' },
 });
