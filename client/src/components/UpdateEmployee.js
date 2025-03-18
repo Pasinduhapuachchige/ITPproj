@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UpdateEmployee = () => {
-  const { id } = useParams(); // Get the employee ID from the URL
+  const { id } = useParams();
   const [employee, setEmployee] = useState({
     employeeNumber: '',
     name: '',
@@ -14,7 +15,6 @@ const UpdateEmployee = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Fetch the employee details
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
@@ -22,7 +22,7 @@ const UpdateEmployee = () => {
         const response = await axios.get(`http://localhost:5000/api/employees/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setEmployee(response.data); // Set the employee data
+        setEmployee(response.data);
       } catch (err) {
         setError('Failed to fetch employee details');
       }
@@ -31,7 +31,6 @@ const UpdateEmployee = () => {
     fetchEmployee();
   }, [id]);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -43,66 +42,97 @@ const UpdateEmployee = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert('Employee updated successfully');
-      navigate('/registered-employees'); // Redirect to the employee list
+      navigate('/registered-employees');
     } catch (err) {
       setError('Failed to update employee');
     }
   };
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEmployee({ ...employee, [name]: value });
   };
 
   return (
-    <div>
-      <h2>Update Employee</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="employeeNumber"
-          placeholder="Employee Number"
-          value={employee.employeeNumber}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={employee.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={employee.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={employee.phoneNumber}
-          onChange={handleChange}
-          required
-        />
-        <select
-          name="role"
-          value={employee.role}
-          onChange={handleChange}
-        >
-          <option value="employee">Employee</option>
-          <option value="hr_manager">HR Manager</option>
-          <option value="system_admin">System Admin</option>
-        </select>
-        <button type="submit">Update Employee</button>
-      </form>
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-header">
+              <h2 className="text-center">Update Employee</h2>
+            </div>
+            <div className="card-body">
+              {error && <div className="alert alert-danger">{error}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="employeeNumber" className="form-label">Employee Number</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="employeeNumber"
+                    placeholder="Employee Number"
+                    value={employee.employeeNumber}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="name" className="form-label">Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="name"
+                    placeholder="Name"
+                    value={employee.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    placeholder="Email"
+                    value={employee.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="phoneNumber" className="form-label">Phone Number</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="phoneNumber"
+                    placeholder="Phone Number"
+                    value={employee.phoneNumber}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="role" className="form-label">Role</label>
+                  <select
+                    className="form-select"
+                    name="role"
+                    value={employee.role}
+                    onChange={handleChange}
+                  >
+                    <option value="employee">Employee</option>
+                    <option value="hr_manager">HR Manager</option>
+                    <option value="system_admin">System Admin</option>
+                  </select>
+                </div>
+                <div className="d-grid">
+                  <button type="submit" className="btn btn-primary">Update Employee</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

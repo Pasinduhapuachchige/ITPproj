@@ -100,4 +100,14 @@ router.delete('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => 
   }
 });
 
+// routes/employees.js/count employees
+router.get('/count', auth(['hr_manager', 'system_admin']), async (req, res) => {
+  try {
+    const count = await User.countDocuments({});
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
