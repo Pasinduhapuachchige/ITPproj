@@ -4,6 +4,7 @@ import Login from './components/Login';
 import EmployeeDashboard from './components/dashboards/EmployeeDashboard';
 import HRDashboard from './components/dashboards/HRDashboard';
 import AdminDashboard from './components/dashboards/AdminDashboard';
+import RecruitingManagerDashboard from './components/dashboards/RecruitingManagerDashboard';
 import AddEmployee from './components/AddEmployee';
 import RegisteredEmployees from './components/dashboards/RegisteredEmployees';
 import UpdateEmployee from './components/UpdateEmployee';
@@ -13,12 +14,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
 
-  // Redirect to login if no token is found
   if (!token) {
     return <Navigate to="/" />;
   }
 
-  // Render the protected component
   return children;
 };
 
@@ -51,6 +50,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiting-manager-dashboard"
+          element={
+            <ProtectedRoute>
+              <RecruitingManagerDashboard />
             </ProtectedRoute>
           }
         />

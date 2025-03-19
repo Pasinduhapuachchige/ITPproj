@@ -1,11 +1,10 @@
-// routes/employees.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
-// Fetch All Employees (Only HR Manager and System Admin can fetch employees)
-router.get('/', auth(['hr_manager', 'system_admin']), async (req, res) => {
+// Fetch All Employees (HR Manager, System Admin, and Recruiting Manager can fetch employees)
+router.get('/', auth(['hr_manager', 'system_admin', 'recruiting_manager']), async (req, res) => {
   try {
     const employees = await User.find({}, { password: 0 }); // Exclude the password field
     res.json(employees);
@@ -14,8 +13,8 @@ router.get('/', auth(['hr_manager', 'system_admin']), async (req, res) => {
   }
 });
 
-// Fetch a Single Employee by ID (Only HR Manager and System Admin can fetch employees)
-router.get('/:id', auth(['hr_manager', 'system_admin']), async (req, res) => {
+// Fetch a Single Employee by ID (HR Manager, System Admin, and Recruiting Manager can fetch employees)
+router.get('/:id', auth(['hr_manager', 'system_admin', 'recruiting_manager']), async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -29,18 +28,16 @@ router.get('/:id', auth(['hr_manager', 'system_admin']), async (req, res) => {
   }
 });
 
-// Add Employee (Only System Admin or HR Manager can add employees)
+// Add Employee (System Admin or HR Manager can add employees)
 router.post('/', auth(['system_admin', 'hr_manager']), async (req, res) => {
   const { employeeNumber, name, email, phoneNumber, password, role } = req.body;
 
   try {
-    // Check if the employeeNumber already exists
     const existingEmployee = await User.findOne({ employeeNumber });
     if (existingEmployee) {
       return res.status(400).json({ message: 'Employee number already exists' });
     }
 
-    // Create a new user (employee)
     const user = new User({ employeeNumber, name, email, phoneNumber, password, role });
     await user.save();
     res.status(201).json({ message: 'Employee added successfully' });
@@ -53,13 +50,12 @@ router.post('/', auth(['system_admin', 'hr_manager']), async (req, res) => {
   }
 });
 
-// Update Employee (Only System Admin or HR Manager can update employees)
+// Update Employee (System Admin or HR Manager can update employees)
 router.put('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => {
   const { id } = req.params;
   const { employeeNumber, name, email, phoneNumber, role } = req.body;
 
   try {
-    // Check if the new employeeNumber already exists for another employee
     if (employeeNumber) {
       const existingEmployee = await User.findOne({ employeeNumber, _id: { $ne: id } });
       if (existingEmployee) {
@@ -70,7 +66,7 @@ router.put('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => {
     const updatedEmployee = await User.findByIdAndUpdate(
       id,
       { employeeNumber, name, email, phoneNumber, role },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!updatedEmployee) {
@@ -83,7 +79,7 @@ router.put('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => {
   }
 });
 
-// Delete Employee (Only System Admin or HR Manager can delete employees)
+// Delete Employee (System Admin or HR Manager can delete employees)
 router.delete('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => {
   const { id } = req.params;
 
@@ -95,16 +91,6 @@ router.delete('/:id', auth(['system_admin', 'hr_manager']), async (req, res) => 
     }
 
     res.json({ message: 'Employee deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// routes/employees.js/count employees
-router.get('/count', auth(['hr_manager', 'system_admin']), async (req, res) => {
-  try {
-    const count = await User.countDocuments({});
-    res.json({ count });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -123,6 +123,7 @@ const UpdateEmployee = () => {
                     <option value="employee">Employee</option>
                     <option value="hr_manager">HR Manager</option>
                     <option value="system_admin">System Admin</option>
+                    <option value="recruiting_manager">Recruiting Manager</option> {/* Added recruiting_manager */}
                   </select>
                 </div>
                 <div className="d-grid">

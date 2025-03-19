@@ -1,8 +1,7 @@
-// AddEmployee.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AddEmployee = ({ onEmployeeAdded }) => {
   const [employeeNumber, setEmployeeNumber] = useState('');
@@ -12,7 +11,7 @@ const AddEmployee = ({ onEmployeeAdded }) => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('employee');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Use navigate for redirection
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +40,9 @@ const AddEmployee = ({ onEmployeeAdded }) => {
       if (onEmployeeAdded) {
         onEmployeeAdded();
       }
+
+      // Redirect to the list of employees
+      navigate('/registered-employees');
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setError('Employee number already exists');
@@ -132,6 +134,7 @@ const AddEmployee = ({ onEmployeeAdded }) => {
                     <option value="employee">Employee</option>
                     <option value="hr_manager">HR Manager</option>
                     <option value="system_admin">System Admin</option>
+                    <option value="recruiting_manager">Recruiting Manager</option>
                   </select>
                 </div>
                 <div className="d-grid">

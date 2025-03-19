@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Use named import
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { jwtDecode } from 'jwt-decode';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,11 +19,9 @@ const Login = () => {
         password,
       });
 
-      // Save the JWT token in localStorage
       localStorage.setItem('token', response.data.token);
 
-      // Decode the token to get the role
-      const decoded = jwtDecode(response.data.token); // Use jwtDecode directly
+      const decoded = jwtDecode(response.data.token);
       const role = decoded.role;
 
       // Redirect based on role
@@ -33,8 +31,10 @@ const Login = () => {
         navigate('/hr-dashboard');
       } else if (role === 'system_admin') {
         navigate('/admin-dashboard');
+      } else if (role === 'recruiting_manager') {
+        navigate('/recruiting-manager-dashboard'); // Added recruiting_manager
       } else {
-        navigate('/dashboard'); // Fallback for unknown roles
+        navigate('/dashboard');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -44,10 +44,10 @@ const Login = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${require('../assets/background.jpg')})`, // Path to your image
-        backgroundSize: 'cover', // Cover the entire container
-        backgroundPosition: 'center', // Center the image
-        minHeight: '100vh', // Full viewport height
+        backgroundImage: `url(${require('../assets/background.jpg')})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
