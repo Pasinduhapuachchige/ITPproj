@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import GeneratePDF from './GeneratePDF'; // Correct import
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const RegisteredEmployees = () => {
   const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -19,14 +23,31 @@ const RegisteredEmployees = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEmployees(response.data);
+      setFilteredEmployees(response.data);
     } catch (err) {
       setError('Failed to fetch employees');
     }
   };
 
+  // Handle Search
+  useEffect(() => {
+    const results = employees.filter((employee) => {
+      const name = employee.name || '';
+      const email = employee.email || '';
+      const employeeNumber = employee.employeeNumber || '';
+
+      return (
+        name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employeeNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+    setFilteredEmployees(results);
+  }, [searchTerm, employees]);
+
   // Handle Update
   const handleUpdate = (id) => {
-    navigate(`/update-employee/${id}`); // Navigate to the update form
+    navigate(`/update-employee/${id}`);
   };
 
   // Handle Delete
@@ -47,13 +68,29 @@ const RegisteredEmployees = () => {
   };
 
   return (
-    <div>
-      <h1>Registered Employees</h1>
-      {error && <p>{error}</p>}
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Registered Employees</h1>
+      {error && <div className="alert alert-danger">{error}</div>}
 
-      {/* Display the list of employees */}
-      <table>
-        <thead>
+      {/* Search Bar and Download PDF Button */}
+      <div className="row mb-4">
+        <div className="col-md-6">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by name, email, or employee number"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="col-md-6 text-end">
+          <GeneratePDF employees={filteredEmployees} /> {/* Pass filtered employees to PDF component */}
+        </div>
+      </div>
+
+      {/* Employee Table */}
+      <table className="table table-striped table-bordered">
+        <thead className="thead-dark">
           <tr>
             <th>Employee Number</th>
             <th>Name</th>
@@ -64,16 +101,26 @@ const RegisteredEmployees = () => {
           </tr>
         </thead>
         <tbody>
-          {employees.map((employee) => (
+          {filteredEmployees.map((employee) => (
             <tr key={employee._id}>
-              <td>{employee.employeeNumber}</td>
-              <td>{employee.name}</td>
-              <td>{employee.email}</td>
-              <td>{employee.phoneNumber}</td>
-              <td>{employee.role}</td>
+              <td>{employee.employeeNumber || 'N/A'}</td>
+              <td>{employee.name || 'N/A'}</td>
+              <td>{employee.email || 'N/A'}</td>
+              <td>{employee.phoneNumber || 'N/A'}</td>
+              <td>{employee.role || 'N/A'}</td>
               <td>
-                <button onClick={() => handleUpdate(employee._id)}>Update</button>
-                <button onClick={() => handleDelete(employee._id)}>Delete</button>
+                <button
+                  className="btn btn-warning btn-sm me-2"
+                  onClick={() => handleUpdate(employee._id)}
+                >
+                  Update
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(employee._id)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}

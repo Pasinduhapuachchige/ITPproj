@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  Box,
+  IconButton,
+} from '@mui/material'; // Import Material-UI components
+import LogoutIcon from '@mui/icons-material/Logout'; // Import Material-UI Icons
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [employeeCount, setEmployeeCount] = useState(0); // State to store employee count
+  const [employeeCount, setEmployeeCount] = useState(0);
 
   // Fetch employee count on component mount
   useEffect(() => {
@@ -40,64 +53,88 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="container-fluid">
-      {/* Dashboard Header */}
-      <header className="bg-primary text-white text-center py-4 mb-4">
-        <h1>System Administrator Dashboard</h1>
-        <p className="lead">Welcome to the System Administrator Dashboard!</p>
-        {/* Log Out Button */}
-        <button
-          onClick={handleLogOut}
-          className="btn btn-danger"
-          style={{ position: 'absolute', top: '20px', right: '20px' }}
-        >
-          Log Out
-        </button>
-      </header>
+    <Box sx={{ flexGrow: 1 }}>
+      {/* App Bar (Header) */}
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            System Administrator Dashboard
+          </Typography>
+          <IconButton color="inherit" onClick={handleLogOut}>
+            <LogoutIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
 
       {/* Main Content */}
-      <div className="row justify-content-center">
-        <div className="col-md-6">
+      <Container sx={{ mt: 4 }}>
+        <Grid container spacing={3}>
           {/* Card for Employee Count */}
-          <div className="card text-center mb-4">
-            <div className="card-body">
-              <h5 className="card-title">Registered Employees</h5>
-              <p className="card-text">
-                Total Employees: <strong>{employeeCount}</strong>
-              </p>
-            </div>
-          </div>
+          <Grid item xs={12} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Registered Employees
+                </Typography>
+                <Typography variant="h3" component="div">
+                  {employeeCount}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total number of employees in the system.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
           {/* Card for Add Employee */}
-          <div className="card text-center mb-4">
-            <div className="card-body">
-              <h5 className="card-title">Add Employee</h5>
-              <p className="card-text">Add a new employee to the system.</p>
-              <button
-                onClick={navigateToAddEmployee}
-                className="btn btn-primary"
-              >
-                Add Employee
-              </button>
-            </div>
-          </div>
+          <Grid item xs={12} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Add Employee
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Add a new employee to the system.
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={navigateToAddEmployee}
+                >
+                  Add Employee
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
 
           {/* Card for View Registered Employees */}
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title">View Registered Employees</h5>
-              <p className="card-text">View and manage registered employees.</p>
-              <button
-                onClick={navigateToRegisteredEmployees}
-                className="btn btn-success"
-              >
-                View Employees
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          <Grid item xs={12} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  View Employees
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  View and manage registered employees.
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={navigateToRegisteredEmployees}
+                  color="success"
+                >
+                  View Employees
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 
